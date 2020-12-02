@@ -1,44 +1,20 @@
 // AWS variables
 
-variable "aws_credentials" {
-  default = "$HOME/.aws/credentials"
-}
-
 variable "aws_region" {
-  default = ""
+  default = "us-east-1"
 }
 
 variable "aws_availability_zone" {
-  default = ""
+  default = "us-east-1a"
 }
 
 variable "aws_key_name" {
-  default = ""
-}
-
-variable "aws_vpc_cidr_block" {
-  description = "Enter the VPC subnet (example: 172.16.0.0/16)"
-  default = ""
-}
-
-variable "aws_public_sn_cidr_block" {
-  description = "Enter the public subnet (example: 172.16.0.0/24)"
-  default = ""
-}
-
-variable "aws_private_sn_cidr_block" {
-  description = "Enter the private subnet (example: 172.16.100.0/24)"
-  default = ""
-}
-
-variable "aws_private_sn" {
-  description = "Enter the private subnet (example: 172.16.100.0"
-  default = ""
+  default = "vce"
 }
 
 variable "aws_private_ip" {
-  description = "Enter the private IP for the LAN interface (example: 172.16.100.100) - this IP has to be configured in VCO/Edge/Device as Corporate IP"
-  default = ""
+  description = "Enter the private IP for the VCE LAN interface (example: 172.16.100.100) - this IP has to be configured in VCO/Edge/Device as Corporate IP"
+  default = "172.36.100.100"
 }
 
 variable "aws_instance_type" {
