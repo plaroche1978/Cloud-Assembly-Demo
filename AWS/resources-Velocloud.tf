@@ -7,48 +7,28 @@
 4- create static route to reach the private cloud management subnet via Velocloud CloudVPN
 */
 
-data "aws_vpc" "aws_vcn-vpc" {
-   name = "VPC"
-}
-
-data "aws_subnet" "aws_vcn-public-sn" {
-   name = "PUBLIC-SUBNET"
-}
-
-data "aws_subnet" "aws_vcn-private-sn" {
-   name = "PRIVATE-SUBNET"
-}
-
-data "aws_security_group" "aws_vcn-sg-wan" {
-   name = "PUBLIC-SG"
-}
-
-data "aws_security_group" "aws_vcn-sg-lan" {
-   name = "PRIVATE-SG"
-}
-
 // 1- Create velocloud interfaces
 
 // GE1 definition - Management interface
 resource "aws_network_interface" "aws_velo-ge1" { 
-    subnet_id = data.aws_subnet.aws_vcn-public-sn.id 
+    subnet_id = var.aws_public_sn_cidr_block 
     source_dest_check = false
-    security_groups = [data.aws_security_group.aws_vcn-sg-wan.id]
+    security_groups = [var.aws_public_sg]
 }
 
 // GE2 definition - WAN interface
 resource "aws_network_interface" "aws_velo-ge2" { 
-    subnet_id = data.aws_subnet.aws_vcn-public-sn.id 
+    subnet_id = var.aws_public_sn_cidr_block 
     source_dest_check = false
-    security_groups = [data.aws_security_group.aws_vcn-sg-wan.id]
+    security_groups = [var.aws_public_sg]
 }
 
 // GE3 definition - LAN interface
 resource "aws_network_interface" "aws_velo-ge3" { 
-    subnet_id = data.aws_subnet.aws_vcn-private-sn.id 
+    subnet_id = var.aws_private_sn_cidr_block 
     private_ips = [var.aws_private_ip]
     source_dest_check = false
-    security_groups = [data.aws_security_group.aws_vcn-sg-lan.id]
+    security_groups = [var.aws_private_sg]
 }
 
 // 2- Create SSH key pair
@@ -95,10 +75,12 @@ resource "aws_eip" "aws_velo-ge2-eip" {
     }
 }
 
+/*
 // 4- create static route to reach the private cloud management subnet via Velocloud CloudVPN
 resource "aws_route" "aws_branch_route" {
-    route_table_id = data.aws_vpc.aws_vcn-vpc.main_route_table_id
+    route_table_id = data.aws_vpc.aws_vcn-vpc.id.main_route_table_id
     depends_on = [aws_instance.aws_velo-instance, aws_network_interface.aws_velo-ge3]
     destination_cidr_block = "10.5.99.0/24"
     network_interface_id = aws_network_interface.aws_velo-ge3.id
 }
+*/
