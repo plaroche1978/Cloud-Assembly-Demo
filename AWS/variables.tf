@@ -1,19 +1,53 @@
 // AWS variables
+variable "aws_credentials" {
+  default = "$HOME/.aws/credentials"
+}
+
+variable "aws_access_key" {} 
+
+variable "aws_secret_key" {} 
+
+variable "aws_role_arn" {} 
 
 variable "aws_region" {
-  default = "us-east-1"
+  default = "ca-central-1"
 }
 
 variable "aws_availability_zone" {
-  default = "us-east-1a"
+  default = "ca-central-1a"
 }
 
 variable "aws_key_name" {
   default = "vce"
 }
 
+variable "aws_vpc_cidr_block" {
+  description = "Enter the VPC name"
+  default = "VPC"
+}
+
+variable "aws_public_sn_cidr_block" {
+  description = "Enter the public subnet name"
+  default = "PUBLIC-SUBNET"
+}
+
+variable "aws_private_sn_cidr_block" {
+  description = "Enter the private subnet name"
+  default = "PRIVATE-SUBNET"
+}
+
+variable "aws_public_sg" {
+  description = "Enter the public security group"
+  default = "PUBLIC-SG"
+}
+
+variable "aws_private_sg" {
+  description = "Enter the private security group"
+  default = "PRIVATE-SG"
+}
+
 variable "aws_private_ip" {
-  description = "Enter the private IP for the VCE LAN interface (example: 172.16.100.100) - this IP has to be configured in VCO/Edge/Device as Corporate IP"
+  description = "Enter the private IP for VCE LAN interface (example: 172.16.100.100)"
   default = "172.36.100.100"
 }
 
@@ -42,6 +76,42 @@ variable "aws_amis" {
         us-west-1 = "ami-0eae7918e6c5e03e3"
         us-west-2 = "ami-0e2374b672d5149c3"
     }
+}
+
+// AWS Data
+data "aws_vpc" "aws_vcn-vpc" {
+   filter {
+        name = "tag:Name"
+        values = [var.aws_vpc_cidr_block]
+   }
+}
+
+data "aws_subnet" "aws_vcn-public-sn" {
+   filter {
+        name = "tag:Name"
+        values = [var.aws_public_sn_cidr_block]
+   }
+}
+
+data "aws_subnet" "aws_vcn-private-sn" {
+    filter {
+        name = "tag:Name"
+        values = [var.aws_private_sn_cidr_block]
+    }
+}
+
+data "aws_security_group" "aws_vcn-sg-wan" {
+   filter {
+       name = "description"
+       values = [var.aws_public_sg]
+   }
+}
+
+data "aws_security_group" "aws_vcn-sg-lan" {
+   filter {
+       name = "description"
+       values = [var.aws_private_sg]
+   }
 }
 
 // AVI Variables
@@ -75,3 +145,10 @@ variable "aws_domain_name" {
   default = "web-aws-cloud-vs.ovn.ca"
 }
 
+variable "aws_web-vm1" {
+  default = "1.1.1.1"
+}
+
+variable "aws_web-vm2" {
+  default = "1.1.1.2"
+}
