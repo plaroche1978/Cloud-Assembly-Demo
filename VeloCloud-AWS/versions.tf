@@ -1,8 +1,5 @@
 terraform {
   required_providers {
-    avi = {
-      source = "terraform-providers/avi"
-    }
     aws = {
       source = "hashicorp/aws"
     }
@@ -10,5 +7,5 @@ terraform {
       source = "hashicorp/tls"
     }
   }
-  required_version = ">= 0.13"
+  required_version = ">= 0.12"
 }
